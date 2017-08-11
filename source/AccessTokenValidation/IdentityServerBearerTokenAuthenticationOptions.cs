@@ -39,6 +39,7 @@ namespace IdentityServer3.AccessTokenValidation
             RoleClaimType = "role";
 
             ValidationMode = ValidationMode.Both;
+            ValidateAudience = true;
             RequiredScopes = Enumerable.Empty<string>();
             ValidationResultCacheDuration = TimeSpan.FromMinutes(5);
             PreserveAccessToken = false;
@@ -206,5 +207,11 @@ namespace IdentityServer3.AccessTokenValidation
         /// Default is 1 day.
         /// </summary>
         public TimeSpan AutomaticRefreshInterval { get; set; }
+
+        /// <summary>
+        /// Makes Audience validation optional. This is to support non-standard scenario where middleware is used with non-IdentityServer Authorization Servers
+        /// and it's impossible to influence "aud" claim in the token. Example would be "Azure AD" OpenID Connect provider.
+        /// </summary>
+        public bool ValidateAudience { get; set; }
     }
 }

@@ -123,5 +123,28 @@ namespace AccessTokenValidation.Tests.Integration_Tests
             var result = await client.GetAsync("http://test");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+        [Fact]
+        public async Task Token_Sent_With_Unexpected_Audience_And_Audience_Validation_Is_On()
+        {
+            var client = PipelineFactory.CreateHttpClient(_options);
+            var token = TokenFactory.CreateTokenString(TokenFactory.CreateToken(audience:"UNEXPECTED_AUDIENCE"));
+
+            client.SetBearerToken(token);
+
+            var result = await client.GetAsync("http://test");
+            result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+        [Fact]
+        public async Task Token_Sent_With_Unexpected_Audience_And_Audience_Validation_Is_Off()
+        {
+            _options.ValidateAudience = false;
+            var client = PipelineFactory.CreateHttpClient(_options);
+            var token = TokenFactory.CreateTokenString(TokenFactory.CreateToken(audience:"UNEXPECTED_AUDIENCE"));
+
+            client.SetBearerToken(token);
+
+            var result = await client.GetAsync("http://test");
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
     }
 }
